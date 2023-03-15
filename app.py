@@ -160,7 +160,7 @@ def make_graphs(date_value, tickers):
         html.Hr(),
         html.Div([
             html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
-            # html.Div([dcc.Graph(figure=fig_ecdf)], className="six columns"),
+            # html.Div([dcc.Graph(figure=fig_ecdf)], className="twelve columns"),
         ], className="row"),
         # html.Div([
         #     html.Div([dcc.Graph(figure=fig_line)], className="twelve columns"),
