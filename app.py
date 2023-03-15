@@ -99,7 +99,7 @@ app.layout = html.Div([
                      value=["AAPL"],multi=True,
                      options=[{'label': key, 'value': value} for key, value in
                               stock_tickers.items()]),
-    ],className="two columns"),className="row"),
+    ],className="three columns"),className="row"),
     html.P("Choose a Starting Date: "),
     html.Div(html.Div([
         dcc.DatePickerSingle(
@@ -108,7 +108,7 @@ app.layout = html.Div([
         max_date_allowed=date(2023,3, 10),
         initial_visible_month= date(2022,1,31),
         date=date(2022,1, 31))
-    ],className="two columns"),className="row"),
+    ],className="three columns"),className="row"),
 
     html.Div(id="output-div", children=[]),
 ])
@@ -150,8 +150,8 @@ def make_graphs(date_value, tickers):
         html.H4("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
-            html.Div([dcc.Graph(figure=fig_line)], className="six columns"),
-            # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
+            html.Div([dcc.Graph(figure=fig_line)], className="twelve columns"),
+            # html.Div([dcc.Graph(figure=fig_bar)], className="twelve columns"),
         ], className="row"),
         html.H4("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
         html.Hr(),
