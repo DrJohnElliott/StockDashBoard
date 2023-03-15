@@ -132,6 +132,9 @@ def make_graphs(date_value, tickers):
     #Line Chart Returns 
  
     fig_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500)
+  
+    fig_line.update_xaxes(fixedrange=True)
+    fig_line.update_yaxes(fixedrange=True)
     
 
     #Bar Chart
