@@ -159,7 +159,7 @@ def make_graphs(date_value, tickers):
         html.H4("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
-            html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
+            html.Div([dcc.Graph(figure=fig_bar)], className="twelve columns"),
             # html.Div([dcc.Graph(figure=fig_ecdf)], className="twelve columns"),
         ], className="row"),
         # html.Div([
