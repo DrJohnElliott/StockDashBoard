@@ -142,6 +142,9 @@ def make_graphs(date_value, tickers):
     fig_bar = px.bar(df_cov, x="Ticker", y="COV", color="Ticker", text_auto=True, height=300)
     
     fig_bar.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+    
+    fig_bar.update_xaxes(fixedrange=True)
+    fig_bar.update_yaxes(fixedrange=True)
                     
 
     # string_prefix = 'You have selected: '
