@@ -91,7 +91,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 app.layout = html.Div([
-    html.H2("Performance of Selected Stocks from the Chosen Date of Reference", style={"textAlign":"left"}),
+    html.H3("Performance of Selected Stocks from the Chosen Date of Reference", style={"textAlign":"left"}),
     html.Hr(),
     html.P("Choose Stocks of Interest:"),
     html.Div(html.Div([
@@ -147,13 +147,13 @@ def make_graphs(date_value, tickers):
     #     date_string = date_object.strftime('%B %d, %Y')
     #     date_string = "Selected Reference Date is -> "+date_string
     return [
-        html.H3("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
+        html.H4("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
             html.Div([dcc.Graph(figure=fig_line)], className="six columns"),
             # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
         ], className="row"),
-        html.H3("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
+        html.H4("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
             html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
