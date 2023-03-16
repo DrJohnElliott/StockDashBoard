@@ -34,32 +34,34 @@ import yfinance as yf
 import datetime as dt
 
 def download_stocks(tickers):
-    comb_df=pd.DataFrame()
+    df_comb=pd.DataFrame()
     for ticker in tickers:
         try:
             stock = yf.Ticker(ticker)
             df = stock.history(period="10y")
             df["ticker"]=ticker
-            comb_df=pd.concat([df,comb_df], axis=0)
+            df_comb=pd.concat([df,df_comb], axis=0)
 
         except:
             pass
-    return comb_df
+    return df_comb
 
 
-def processed_data(date_value, tickers, comb_df):
+def processed_data(date_value, tickers, df_comb):
     #processing all stock files
-    # comb_df=pd.read_csv("combined.csv", index_col="Date", parse_dates=True)
+    # df_comb=pd.read_csv("combined.csv", index_col="Date", parse_dates=True)
     
-    comb_df.index=[dt.datetime.strftime(x, "%d-%m-%Y") for x in list(comb_df.index)]
-    comb_df.index = pd.to_datetime(comb_df.index, dayfirst = True)
+    df_comb.index=[dt.datetime.strftime(x, "%d-%m-%Y") for x in list(df_comb.index)]
+    df_comb.index = pd.to_datetime(df_comb.index, dayfirst = True)
+    
 
     returns ={}
     cov = {}
     # volume = {}
+    df_stocks=pd.DataFrame()
     for ticker in tickers:
-        filt = (comb_df["ticker"]==ticker)
-        temp_df= comb_df[filt]
+        filt = (df_comb["ticker"]==ticker)
+        temp_df= df_comb[filt]
         closest_date_index = temp_df.index.get_loc(date_value, method="nearest")
         ref_value_close = temp_df.iloc[closest_date_index,:][3]
         temp_df = temp_df.iloc[closest_date_index:,:]
@@ -67,6 +69,7 @@ def processed_data(date_value, tickers, comb_df):
         returns.update({ticker: (value_df-1)*100})
         sd = temp_df[temp_df["ticker"]==ticker]["Close"].std()
         mean = temp_df[temp_df["ticker"]==ticker]["Close"].mean()
+        df_stocks =pd.concat([temp_df,df_stocks], axis=0)
         cov.update({ticker: round(sd/mean,2)})
 
     df_ret = pd.DataFrame(returns)
@@ -79,7 +82,7 @@ def processed_data(date_value, tickers, comb_df):
     df_cov = df_cov.reset_index()
     df_cov.columns = ["Ticker","COV"]
 
-    return df_ret, df_cov
+    return df_ret, df_cov, df_comb, df_stocks
 
 #main application
 
@@ -99,7 +102,7 @@ app.layout = html.Div([
                      value=["AAPL"],multi=True,
                      options=[{'label': key, 'value': value} for key, value in
                               stock_tickers.items()]),
-    ],className="three columns"),className="row"),
+    ],className="two columns"),className="row"),
     html.P("Choose a Starting Date: "),
     html.Div(html.Div([
         dcc.DatePickerSingle(
@@ -108,7 +111,7 @@ app.layout = html.Div([
         max_date_allowed=date(2023,3, 10),
         initial_visible_month= date(2022,1,31),
         date=date(2022,1, 31))
-    ],className="three columns"),className="row"),
+    ],className="two columns"),className="row"),
 
     html.Div(id="output-div", children=[]),
 ])
@@ -124,17 +127,28 @@ app.layout = html.Div([
 def make_graphs(date_value, tickers):
     #Processing Dataframes for plotting
     
-    comb_df = download_stocks(tickers)
+    df_comb = download_stocks(tickers)
     
     
-    df_ret, df_cov = processed_data(date_value,tickers, comb_df)
+    df_ret, df_cov, df_comb, df_stocks = processed_data(date_value,tickers, df_comb)
     
-    #Line Chart Returns 
+    # df_close=temp_df[:,["Close","Ticker"]]
+    
+    df_close = df_stocks.loc[:,["Close","ticker"]]
+    
+                           
+    
+    #Line Charts Returns 
  
-    fig_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500)
-  
-    fig_line.update_xaxes(fixedrange=True)
-    fig_line.update_yaxes(fixedrange=True)
+    fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500)
+    
+    fig1_line.update_xaxes(fixedrange=True)
+    fig1_line.update_yaxes(fixedrange=True)
+    
+    fig2_line = px.line(df_close, x=df_close.index, y="Close", color="ticker", height=500, log_y=True)
+    
+    fig2_line.update_xaxes(fixedrange=True)
+    fig2_line.update_yaxes(fixedrange=True)
     
 
     #Bar Chart
@@ -144,8 +158,7 @@ def make_graphs(date_value, tickers):
     fig_bar.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     
     fig_bar.update_xaxes(fixedrange=True)
-    fig_bar.update_yaxes(fixedrange=True)
-                    
+    fig_bar.update_yaxes(fixedrange=True)                
 
     # string_prefix = 'You have selected: '
     # if date_value is not None:
@@ -156,14 +169,20 @@ def make_graphs(date_value, tickers):
         html.H4("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
-            html.Div([dcc.Graph(figure=fig_line)], className="twelve columns"),
-            # html.Div([dcc.Graph(figure=fig_bar)], className="twelve columns"),
+            html.Div([dcc.Graph(figure=fig1_line)], className="twelve columns"),
+            # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
+        ], className="row"),
+        html.H4("Selected Stock's Closing Price trends from the Chosen Date of Reference", style={"textAlign":"left"}),
+        html.Hr(),
+        html.Div([
+            html.Div([dcc.Graph(figure=fig2_line)], className="twelve columns"),
+            # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
         ], className="row"),
         html.H4("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
         html.Hr(),
         html.Div([
             html.Div([dcc.Graph(figure=fig_bar)], className="twelve columns"),
-            # html.Div([dcc.Graph(figure=fig_ecdf)], className="twelve columns"),
+            # html.Div([dcc.Graph(figure=fig_ecdf)], className="six columns"),
         ], className="row"),
         # html.Div([
         #     html.Div([dcc.Graph(figure=fig_line)], className="twelve columns"),
