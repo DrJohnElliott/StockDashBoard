@@ -91,6 +91,8 @@ def processed_data(date_value, tickers, df_comb):
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+server = app.server
+
 app.layout = html.Div([
     html.H3("Performance of Selected Stocks from the Chosen Date of Reference", style={"textAlign":"left"}),
     html.Hr(),
