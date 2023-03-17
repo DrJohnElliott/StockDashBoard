@@ -91,8 +91,6 @@ def processed_data(date_value, tickers, df_comb):
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-server = app.server
-
 app.layout = html.Div([
     html.H3("Performance of Selected Stocks from the Chosen Date of Reference", style={"textAlign":"left"}),
     html.Hr(),
@@ -140,25 +138,35 @@ def make_graphs(date_value, tickers):
     
     #Line Charts Returns 
  
-    fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500)
+    fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500, template='plotly_white')
     
     fig1_line.update_xaxes(fixedrange=True)
     fig1_line.update_yaxes(fixedrange=True)
     
-    fig2_line = px.line(df_close, x=df_close.index, y="Close", color="ticker", height=500, log_y=True)
+    fig1_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
+                       legend={'x':0,'y':1.1,"orientation":"h"}),
+    
+    fig2_line = px.line(df_close, x=df_close.index, y="Close", color="ticker", height=500, log_y=True, template='plotly_white',
+                        labels={"Close":"Closing Price","index":"Date"})
     
     fig2_line.update_xaxes(fixedrange=True)
     fig2_line.update_yaxes(fixedrange=True)
     
+    fig2_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
+                   legend={'x':0,'y':1.1,"orientation":"h"}),
+    
 
     #Bar Chart
     
-    fig_bar = px.bar(df_cov, x="Ticker", y="COV", color="Ticker", text_auto=True, height=300)
+    fig_bar = px.bar(df_cov, x="Ticker", y="COV", color="Ticker", text_auto=True, height=300, template='plotly_white')
     
     fig_bar.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
     
     fig_bar.update_xaxes(fixedrange=True)
-    fig_bar.update_yaxes(fixedrange=True)                
+    fig_bar.update_yaxes(fixedrange=True)
+    
+    fig_bar.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
+               legend={'x':0,'y':1.2,"orientation":"h"}),
 
     # string_prefix = 'You have selected: '
     # if date_value is not None:
