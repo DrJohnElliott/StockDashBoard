@@ -146,7 +146,9 @@ def make_graphs(date_value, tickers):
     fig1_line.update_yaxes(fixedrange=True)
     
     fig1_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
-                       legend={'x':0,'y':1.1,"orientation":"h"}),
+                       legend={'x':0,'y':1.1,"orientation":"h"})
+    
+    fig1_line.update_layout(yaxis_title=None)
     
     fig2_line = px.line(df_close, x=df_close.index, y="Close", color="ticker", height=500, log_y=True, template='plotly_white',
                         labels={"Close":"Closing Price","index":"Date"})
@@ -155,7 +157,9 @@ def make_graphs(date_value, tickers):
     fig2_line.update_yaxes(fixedrange=True)
     
     fig2_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
-                   legend={'x':0,'y':1.1,"orientation":"h"}),
+                   legend={'x':0,'y':1.1,"orientation":"h"})
+    
+    fig2_line.update_layout(yaxis_title=None)
     
 
     #Bar Chart
