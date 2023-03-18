@@ -33,6 +33,10 @@ import datetime
 import yfinance as yf
 import datetime as dt
 
+#new imports
+from plotly.subplots import make_subplots
+
+
 def download_stocks(tickers):
     df_comb=pd.DataFrame()
     for ticker in tickers:
@@ -89,32 +93,41 @@ def processed_data(date_value, tickers, df_comb):
 # Customizing the Layout
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
+                meta_tags=[{'name': 'viewport',
+                            'content': 'width=device-width, initial-scale=1.0'}]
+               )
 server = app.server
 
-app.layout = html.Div([
-    html.H3("Performance of Selected Stocks from the Chosen Date of Reference", style={"textAlign":"left"}),
-    html.Hr(),
-    html.P("Choose Stocks of Interest:"),
-    html.Div(html.Div([
-        dcc.Dropdown(id='stock-type', clearable=False,
+app.layout = dbc.Container([
+    dbc.Row([
+        dbc.Col(html.H4("Performance of Selected Stocks from the Chosen Date of Reference", className ="text-justify text-primary, mb-4"),width=12
+           )
+            ]),
+    
+    dbc.Row([
+        dbc.Col([
+            html.P("Choose Stocks of Interest:"),
+            dcc.Dropdown(id='stock-type', clearable=False,
                      value=["AAPL"],multi=True,
                      options=[{'label': key, 'value': value} for key, value in
                               stock_tickers.items()]),
-    ],className="two columns"),className="row"),
-    html.P("Choose a Starting Date: "),
-    html.Div(html.Div([
-        dcc.DatePickerSingle(
-        id='date-picker-single',
-        min_date_allowed=date(2000,1, 1),
-        max_date_allowed=date(2023,3, 10),
-        initial_visible_month= date(2022,1,31),
-        date=date(2022,1, 31))
-    ],className="two columns"),className="row"),
+                ], width={'size':6}),
+        
+        dbc.Col([
+            html.P("Choose a Starting Date: "),
+            dcc.DatePickerSingle(id='date-picker-single',
+                min_date_allowed=date(2000,1, 1),
+                max_date_allowed=date(2023,3, 1),
+                initial_visible_month= date(2022,1,31),
+                date=date(2022,1, 31))
+                ], width ={'size':6})       
+            ]),
 
-    html.Div(id="output-div", children=[]),
-])
+    dbc.Row([html.Div(id="output-div", children=[]),
+            ]),
+                            ],fluid=False) #make it true to get rid of the side margins
 
 
 # Allowing Callback to interact with components
@@ -125,82 +138,107 @@ app.layout = html.Div([
     Input(component_id="stock-type",component_property="value"))
 
 def make_graphs(date_value, tickers):
+    
+    if date_value is not None:
+        date_object = date.fromisoformat(date_value)
+        date_string = date_object.strftime('%B %d, %Y')
+    
+    fig_height =450
+    fig_width = 1300
+    
     #Processing Dataframes for plotting
     
     df_comb = download_stocks(tickers)
     
-    
     df_ret, df_cov, df_comb, df_stocks = processed_data(date_value,tickers, df_comb)
-    
-    # df_close=temp_df[:,["Close","Ticker"]]
     
     df_close = df_stocks.loc[:,["Close","ticker"]]
     
-                           
+    df_close = df_close.rename(columns={'ticker': 'Ticker'})
     
-    #Line Charts Returns 
+                     
+    
+    #Line Chart1 
  
-    fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", height=500, template='plotly_white')
+    fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", template='plotly_white',
+                       title="Trend of % Returns of Chosen Stocks from "+date_string)
     
     fig1_line.update_xaxes(fixedrange=True)
     fig1_line.update_yaxes(fixedrange=True)
     
     fig1_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
-                       legend={'x':0,'y':1.1,"orientation":"h"})
+                       legend={'x':0,'y':1.05,"orientation":"h"})
     
-    fig1_line.update_layout(yaxis_title=None)
+    fig1_line.update_layout(height=fig_height, width=fig_width,yaxis_title=None, xaxis_title=None)
     
-    fig2_line = px.line(df_close, x=df_close.index, y="Close", color="ticker", height=500, log_y=True, template='plotly_white',
-                        labels={"Close":"Closing Price","index":"Date"})
+    #Line Chart2
+    
+    fig2_line = px.line(df_close, x=df_close.index, y="Close", color="Ticker", log_y=True, template='plotly_white',
+                        labels={"Close":"Closing Price","index":"Date"}, title="Trend of Closing Price of Chosen Stocks from "+date_string)
     
     fig2_line.update_xaxes(fixedrange=True)
     fig2_line.update_yaxes(fixedrange=True)
     
-    fig2_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
-                   legend={'x':0,'y':1.1,"orientation":"h"})
+    fig2_line.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',legend={'x':0,'y':1.05,"orientation":"h"})
     
-    fig2_line.update_layout(yaxis_title=None)
+    fig2_line.update_layout(height=fig_height, width=fig_width,yaxis_title=None, xaxis_title=None)
     
 
     #Bar Chart
     
     fig_bar = px.bar(df_cov, x="Ticker", y="COV", color="Ticker", text_auto=True, height=300, template='plotly_white')
     
-    fig_bar.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False)
+    fig_bar.update_traces(textfont_size=7, textangle=0, textposition="inside", cliponaxis=False)
     
     fig_bar.update_xaxes(fixedrange=True)
     fig_bar.update_yaxes(fixedrange=True)
     
     fig_bar.update_layout(uniformtext_minsize=14, uniformtext_mode='hide',
-               legend={'x':0,'y':1.2,"orientation":"h"}),
+    legend={'x':0,'y':1.05,"orientation":"h"}, title="Coefficient of Variation (SD/Mean) Values of Chosen Stocks from "+date_string),
+    fig_bar.update_layout(height=fig_height, width=fig_width, yaxis_title=None, xaxis_title=None)
+    
+    fig_bar.update_layout(showlegend=False)
 
-    # string_prefix = 'You have selected: '
-    # if date_value is not None:
-    #     date_object = date.fromisoformat(date_value)
-    #     date_string = date_object.strftime('%B %d, %Y')
-    #     date_string = "Selected Reference Date is -> "+date_string
+    if date_value is not None:
+        date_object = date.fromisoformat(date_value)
+        date_string = date_object.strftime('%B %d, %Y')
+
+    
+    
+    # Histogram
+    
+    Tickers = list(set(df_ret["Ticker"]))
+
+    fig_hist = make_subplots(rows=len(Tickers), cols=1, shared_xaxes=True)
+    for i, Ticker in enumerate(Tickers):
+        filt = df_ret["Ticker"]==Ticker     
+        df_ret_filt = df_ret[filt]
+        fig_hist.append_trace(go.Histogram(x=df_ret_filt["%Returns"], texttemplate="%{x}", textfont_size=8), row=i + 1, col=1)
+
+        fig_hist.update_layout(barmode='group')
+    # fig_hist.update_yaxes(title_text='Count')
+    fig_hist.update_layout(height=fig_height, width=fig_width, title_text="Distribution of % Returns of Chosen Stocks from "+date_string+" (xaxis = %returns, yaxis = counts)", template='plotly_white')
+    fig_hist.update_layout(showlegend=False)
+    fig_hist.update_xaxes(fixedrange=True)
+    fig_hist.update_yaxes(fixedrange=True)
+    fig_hist.update_traces(textposition="top center", selector=dict(type='scatter'))
+
+    
+    
     return [
-        html.H4("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
-        html.Hr(),
+        # html.H4("Selected Stock's %Return on Investments from the Chosen Date of Reference", style={"textAlign":"left"}),
+        # html.Hr(),
         html.Div([
-            html.Div([dcc.Graph(figure=fig1_line)], className="twelve columns"),
-            # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
+            html.Div([dcc.Graph(figure=fig1_line)], className="six columns", style={"pading":50,"border":"solid"}),
+            html.Div([dcc.Graph(figure=fig_hist)], className="six columns", style={"pading":50,"border":"solid"}),
         ], className="row"),
-        html.H4("Selected Stock's Closing Price trends from the Chosen Date of Reference", style={"textAlign":"left"}),
-        html.Hr(),
+        # html.H4("Selected Stock's Closing Price trends from the Chosen Date of Reference", style={"textAlign":"left"}),
+        # html.Hr(),
         html.Div([
-            html.Div([dcc.Graph(figure=fig2_line)], className="twelve columns"),
-            # html.Div([dcc.Graph(figure=fig_bar)], className="six columns"),
+            html.Div([dcc.Graph(figure=fig2_line)], className="six columns", style={"pading":50,"border":"solid"}),
+            html.Div([dcc.Graph(figure=fig_bar)], className="six columns", style={"pading":50,"border":"solid"}),
         ], className="row"),
-        html.H4("Selected Stock's Coefficient of Variation (Standard Deviation / Mean)", style={"textAlign":"left"}),
-        html.Hr(),
-        html.Div([
-            html.Div([dcc.Graph(figure=fig_bar)], className="twelve columns"),
-            # html.Div([dcc.Graph(figure=fig_ecdf)], className="six columns"),
-        ], className="row"),
-        # html.Div([
-        #     html.Div([dcc.Graph(figure=fig_line)], className="twelve columns"),
-        # ], className="row"),
+   
     ]
         
 # Runing the application
