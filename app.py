@@ -132,7 +132,8 @@ server = app.server
 
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H4("Performance of stocks from the date of ref.", className ="mb-2"),#width=12
+      dbc.Col(html.H4("Performance of stocks from the date of ref.", 
+                        className="opacity-100 p-2 m-1 bg-primary text-light fw-bold rounded"),#width=12
                 xs=12, sm=12, md=12, lg=5, xl=5
            )
             ],justify="center"
