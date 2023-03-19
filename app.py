@@ -165,13 +165,13 @@ app.layout = dbc.Container([
             ),
 
     dbc.Row([
-        dbc.Col([dcc.Graph(id="fig1_line", figure={}, style={"pading":10,"border":"none"})
+        dbc.Col([dcc.Graph(id="fig1_line", figure={}, style={"pading":10,"border":"ridge"})
                 
                 ],#width ={'size':12}
                 xs=12, sm=12, md=12, lg=5, xl=5
                ),
     
-        dbc.Col([dcc.Graph(id="fig_hist", figure={}, style={"pading":10,"border":"none"})
+        dbc.Col([dcc.Graph(id="fig_hist", figure={}, style={"pading":10,"border":"ridge"})
                 
                 ],#width ={'size':12}
                 xs=12, sm=12, md=12, lg=5, xl=5
@@ -181,13 +181,13 @@ app.layout = dbc.Container([
     
     dbc.Row([
         
-        dbc.Col([dcc.Graph(id="fig2_line", figure={}, style={"pading":10,"border":"none"})
+        dbc.Col([dcc.Graph(id="fig2_line", figure={}, style={"pading":10,"border":"ridge"})
                 
                 ],#width ={'size':12}
                 xs=12, sm=12, md=12, lg=5, xl=5
                ),
             
-        dbc.Col([dcc.Graph(id="fig_bar", figure={}, style={"pading":10,"border":"none"})
+        dbc.Col([dcc.Graph(id="fig_bar", figure={}, style={"pading":10,"border":"ridge"})
                 
                 ],#width ={'size':12}
                 xs=12, sm=12, md=12, lg=5, xl=5
