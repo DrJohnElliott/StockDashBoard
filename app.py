@@ -210,7 +210,7 @@ app.layout = dbc.Container([
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%b %d, %Y')
+        date_string = date_object.strftime('%b %d, %y')
 
 
     df_comb = download_stocks(tickers)
@@ -249,7 +249,7 @@ def update_graph(date_value, tickers):
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%b %d, %Y')
+        date_string = date_object.strftime('%b %d, %y')
     
 
     df_comb = download_stocks(tickers)
@@ -293,7 +293,7 @@ def update_graph(date_value, tickers):
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%b %d, %Y')
+        date_string = date_object.strftime('%b %d, %y')
     
 
     df_comb = download_stocks(tickers)
@@ -339,7 +339,7 @@ def update_graph(date_value, tickers):
     
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%b %d, %Y')
+        date_string = date_object.strftime('%b %d, %y')
     
 
     df_comb = download_stocks(tickers)
