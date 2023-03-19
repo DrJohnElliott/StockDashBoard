@@ -131,11 +131,9 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
                             'content': 'width=device-width, initial-scale=1.0'}]
                )
 
-server = app.server
-
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H4("Performance of Stocks from the Date of Ref.", className ="mb-2"),#width=12
+        dbc.Col(html.H4("Performance of stocks from the date of ref.", className ="mb-2"),#width=12
                 xs=12, sm=12, md=12, lg=5, xl=5
            )
             ],justify="center"
@@ -212,7 +210,7 @@ app.layout = dbc.Container([
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%B %d, %Y')
+        date_string = date_object.strftime('%b %d, %Y')
 
 
     df_comb = download_stocks(tickers)
@@ -234,8 +232,8 @@ def update_graph(date_value, tickers):
     fig1_line.update_layout(
     margin=dict(
         l=0,
-        r=0,
-        t=40,
+        r=10,
+        t=50,
         b=0,
             ))
 
@@ -251,7 +249,7 @@ def update_graph(date_value, tickers):
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%B %d, %Y')
+        date_string = date_object.strftime('%b %d, %Y')
     
 
     df_comb = download_stocks(tickers)
@@ -276,8 +274,8 @@ def update_graph(date_value, tickers):
     fig2_line.update_layout(
         margin=dict(
             l=0,
-            r=0,
-            t=40,
+            r=10,
+            t=50,
             b=0,
                 ))
     
@@ -295,7 +293,7 @@ def update_graph(date_value, tickers):
 def update_graph(date_value, tickers):
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%B %d, %Y')
+        date_string = date_object.strftime('%b %d, %Y')
     
 
     df_comb = download_stocks(tickers)
@@ -322,8 +320,8 @@ def update_graph(date_value, tickers):
     fig_hist.update_layout(
         margin=dict(
             l=0,
-            r=0,
-            t=40,
+            r=10,
+            t=50,
             b=0,
                 ))
     
@@ -341,7 +339,7 @@ def update_graph(date_value, tickers):
     
     if date_value is not None:
         date_object = date.fromisoformat(date_value)
-        date_string = date_object.strftime('%B %d, %Y')
+        date_string = date_object.strftime('%b %d, %Y')
     
 
     df_comb = download_stocks(tickers)
@@ -365,8 +363,8 @@ def update_graph(date_value, tickers):
     fig_bar.update_layout(
     margin=dict(
         l=0,
-        r=0,
-        t=40,
+        r=10,
+        t=50,
         b=0,
             ))
     
