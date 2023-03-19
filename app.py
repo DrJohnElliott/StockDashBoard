@@ -219,7 +219,7 @@ def update_graph(date_value, tickers):
     
  
     fig1_line = px.line(df_ret, x=df_ret.index, y="%Returns", color="Ticker", template='plotly_white',
-                       title="% Returns of Stocks from "+date_string)
+                       title="% Returns on Stocks from "+date_string)
     
     fig1_line.update_xaxes(fixedrange=True)
     fig1_line.update_yaxes(fixedrange=True)
