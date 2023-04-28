@@ -1,7 +1,5 @@
 import os
 
-# path = "/Users/pkar/Documents/Documents - Parag’s MacBook Pro/parag_qc_files/2022/2022_11_26_New_Data_Processing/Python_Finance/out"
-# os.chdir(path)
 
 stock_tickers = {"Nokia": "NOK","Apple":"AAPL","Qualcomm": "QCOM","Google": "GOOG","Facebook":"META",
                  "Netflix": "NFLX","Reliance": "RELIANCE.NS","Nvidia":"NVDA","Amazon": "AMZN",
