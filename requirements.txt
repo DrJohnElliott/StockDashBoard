@@ -3,5 +3,3 @@ dash_bootstrap_components
 dash_core_components
 pandas
 plotly
-yfinance
-gunicorn
