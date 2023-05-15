@@ -371,4 +371,4 @@ def update_graph(date_value, tickers):
         
 # Runing the application
 if __name__ == '__main__':
-    app.run_server(debug=True,use_reloader=False)
+    app.run_server(debug=True, port=8052)
